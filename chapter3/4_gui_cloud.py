@@ -2,17 +2,16 @@ import asyncio
 import os
 
 import streamlit as st
+from dotenv import load_dotenv
 from gui import process_stream
-from strands import Agent
-from whatsnews import get_aws_updates
+from streamlit.errors import StreamlitSecretNotFoundError
 
-os.environ["AWS_ACCESS_KEY_ID"] = st.secrets["AWS_ACCESS_KEY_ID"]
-os.environ["AWS_SECRET_ACCESS_KEY"] = st.secrets["AWS_SECRET_ACCESS_KEY"]
-os.environ["AWS_DEFAULT_REGION"] = st.secrets["AWS_DEFAULT_REGION"]
-
-agent = Agent(
-    model="jp.anthropic.claude-haiku-4-5-20251001-v1:0", tools=[get_aws_updates]
-)
+try:
+    os.environ["AWS_ACCESS_KEY_ID"] = st.secrets["AWS_ACCESS_KEY_ID"]
+    os.environ["AWS_SECRET_ACCESS_KEY"] = st.secrets["AWS_SECRET_ACCESS_KEY"]
+    os.environ["AWS_DEFAULT_REGION"] = st.secrets["AWS_DEFAULT_REGION"]
+except StreamlitSecretNotFoundError:
+    load_dotenv()
 
 
 st.title("AWSアップデート確認くん")
